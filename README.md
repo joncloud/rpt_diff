@@ -6,7 +6,7 @@ How to use:
 2. Now you can use rpt_diff.exe application 
 
 ```bash
-Usage: rpt_diff.exe RPTPath XMLPath ModelNumber
+Usage: rpt_diff.exe RPTPath XMLPath [ModelNumber]
        RPTPath - Full path to .rpt file to be converted to xml
        XMLPath - Full path to where the xml file is written to
        ModelNumber - Select between object model 0 - ReportDocument or 1 (recomended)- ReportClientDocument
