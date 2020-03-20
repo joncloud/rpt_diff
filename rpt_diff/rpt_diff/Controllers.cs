@@ -52,11 +52,11 @@ namespace rpt_diff
 
         private static void ProcessSubreportClientDocument(SubreportClientDocument scd, XmlWriter xmlw)
         {
-            xmlw.WriteAttributeString("EnableOnDemand", scd.EnableOnDemand.ToStringSafe());
-            xmlw.WriteAttributeString("EnableReimport", scd.EnableReimport.ToStringSafe());
-            xmlw.WriteAttributeString("IsImported", scd.IsImported.ToStringSafe());
-            xmlw.WriteAttributeString("Name", scd.Name);
-            xmlw.WriteAttributeString("SubreportLocation", scd.SubreportLocation);
+            xmlw.WriteElementString("EnableOnDemand", scd.EnableOnDemand.ToStringSafe());
+            xmlw.WriteElementString("EnableReimport", scd.EnableReimport.ToStringSafe());
+            xmlw.WriteElementString("IsImported", scd.IsImported.ToStringSafe());
+            xmlw.WriteElementString("Name", scd.Name);
+            xmlw.WriteElementString("SubreportLocation", scd.SubreportLocation);
             ProcessDatabaseController(scd.DatabaseController, xmlw);
             ProcessDataDefController(scd.DataDefController, xmlw);
             ProcessReportDefController(scd.ReportDefController, xmlw);
