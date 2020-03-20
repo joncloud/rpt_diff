@@ -28,58 +28,28 @@ namespace rpt_diff
         [STAThread]
         static int Main(string[] args)
         {
-            string diffPath = "", xmlFilePath1 ="", xmlFilePath2 = "";
             int ModelNumber = 0;
             switch (args.Length)
             {
                 case 3:
                     {
-                        if (!File.Exists(args[1]))
+                        if (!File.Exists(args[0]))
                         {
                             Console.Error.WriteLine("Error: Can't find RPT file - Bad RPTPath1");
                             WriteUsage();
                             return (int)ExitCode.WrongRptFile;
                         }
-                        if(!Int32.TryParse(args[2], out ModelNumber)||(ModelNumber!= 0&&ModelNumber!=1))
-                        {   
-                            Console.Error.WriteLine("Error: Wrong ModelNumber select - must be 0 or 1");
-                            WriteUsage();
-                            return (int)ExitCode.WrongModel;
-                        }
-                        Console.WriteLine("Using object model: \"" + ((ModelNumber==0)?"ReportDocument":"ReportClientDocument") + "\"");
-                        Console.WriteLine("Converting file: \"" + args[1]+"\"");
-                        try
+                        if (!Int32.TryParse(args[2], out ModelNumber) || (ModelNumber != 0 && ModelNumber != 1))
                         {
-                            xmlFilePath1 = RptToXml.ConvertRptToXml(args[1], ModelNumber);
-                        }
-                        catch(Exception e)
-                        {
-                            Console.Error.WriteLine("Error: Convert to XML error");
-                            Console.Error.WriteLine(e);
-                            return (int)ExitCode.ConvertError;
-                        }
-                        Console.WriteLine("File \"" + args[1] + "\" converted to \"" + xmlFilePath1 + "\"");
-                        break;
-                    }
-                case 4:
-                    {
-                        if (!File.Exists(args[1]))
-                        {
-                            Console.Error.WriteLine("Error: Can't find RPT file - Bad RPTPath1");
-                            WriteUsage();
-                            return (int)ExitCode.WrongRptFile;
-                        }
-                        if(!Int32.TryParse(args[3], out ModelNumber)||(ModelNumber!= 0&&ModelNumber!=1))
-                        {   
                             Console.Error.WriteLine("Error: Wrong ModelNumber select - must be 0 or 1");
                             WriteUsage();
                             return (int)ExitCode.WrongModel;
                         }
                         Console.WriteLine("Using object model: \"" + ((ModelNumber == 0) ? "ReportDocument" : "ReportClientDocument") + "\"");
-                        Console.WriteLine("Converting file: \"" + args[1] + "\"");
+                        Console.WriteLine("Converting file: \"" + args[0] + "\"");
                         try
                         {
-                            xmlFilePath1 = RptToXml.ConvertRptToXml(args[1], ModelNumber);
+                            RptToXml.ConvertRptToXml(args[0], args[1], ModelNumber);
                         }
                         catch (Exception e)
                         {
@@ -87,26 +57,8 @@ namespace rpt_diff
                             Console.Error.WriteLine(e);
                             return (int)ExitCode.ConvertError;
                         }
-                        Console.WriteLine("File \"" + args[1] + "\" converted to \"" + xmlFilePath1+"\"");
-                        if (!File.Exists(args[2]))
-                        {
-                            Console.Error.WriteLine("Error: Can't find RPT file - Bad RPTPath2");
-                            WriteUsage();
-                            return (int)ExitCode.WrongRptFile;
-                        }
-                        Console.WriteLine("Converting file: \"" + args[2] + "\"");
-                        try
-                        {
-                            xmlFilePath2 = RptToXml.ConvertRptToXml(args[2], ModelNumber);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.Error.WriteLine("Error: Convert to XML error");
-                            Console.Error.WriteLine(e);
-                            return (int)ExitCode.ConvertError;
-                        }
-                        Console.WriteLine("File \"" + args[2] + "\" converted to \"" + xmlFilePath2 + "\"");
-                        break;
+                        Console.WriteLine("File \"" + args[0] + "\" converted to \"" + args[1] + "\"");
+                        return (int)ExitCode.Success;
                     }
                 default:
                     {
@@ -115,30 +67,6 @@ namespace rpt_diff
                         return (int)ExitCode.WrongArgs;
                     }
             }
-            if (!File.Exists(args[0]))
-            {
-                Console.Error.WriteLine("Error: Unknown diff application - Bad DiffUtilPath");
-                WriteUsage();
-                return (int)ExitCode.WrongDiffApp;
-            }
-            diffPath = args[0];
-            Console.WriteLine("Starting diff application: \"" + diffPath+"\"");
-            Process diffProc = Process.Start(diffPath, String.Format("\"{0}\" \"{1}\"", xmlFilePath1, xmlFilePath2));
-            diffProc.WaitForExit(); 
-            Console.WriteLine("Diff application exited");
-            // delete xml files after closing diff application
-            if (File.Exists(xmlFilePath1))
-            {
-                Console.WriteLine("Deleting file: \"" + xmlFilePath1 + "\"");
-                File.Delete(xmlFilePath1);
-            }
-            if (File.Exists(xmlFilePath2))
-            {
-                Console.WriteLine("Deleting file: \"" + xmlFilePath2 + "\"");
-                File.Delete(xmlFilePath2);
-            }
-            
-            return (int)ExitCode.Success;            
         }
         static void WriteUsage()
         {
