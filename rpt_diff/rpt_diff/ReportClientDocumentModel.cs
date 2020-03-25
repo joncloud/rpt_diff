@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
-using CrystalDecisions.ReportAppServer.ClientDoc;
-
+﻿using CrystalDecisions.ReportAppServer.ClientDoc;
 using ExtensionMethods;
+using System.Text.Json;
 
 namespace rpt_diff
 {
@@ -15,33 +8,33 @@ namespace rpt_diff
     *  ReportClientDocumentModel
     *  - newer
     *  - contains all atributes availible from rpt file
-    *  - can be used in future to merge changes or back convert from xml to rpt
     */
     class ReportClientDocumentModel
     {
-        public static void ProcessReport(ISCDReportClientDocument report, XmlWriter xmlw, string reportDoc = "ReportClientDocument")
+        public static void ProcessReport(ISCDReportClientDocument report, Utf8JsonWriter jsonw, string reportDoc = "ReportClientDocument")
         {
-            xmlw.WriteStartElement(reportDoc);
-            xmlw.WriteElementString("DisplayName", report.DisplayName);
-            xmlw.WriteElementString("IsModified", report.IsModified.ToStringSafe());
-            xmlw.WriteElementString("IsOpen", report.IsOpen.ToStringSafe());
-            xmlw.WriteElementString("IsReadOnly", report.IsReadOnly.ToStringSafe());
-            xmlw.WriteElementString("LocaleID", report.LocaleID.ToStringSafe());
-            xmlw.WriteElementString("MajorVersion", report.MajorVersion.ToStringSafe());
-            xmlw.WriteElementString("MinorVersion", report.MinorVersion.ToStringSafe());
-            xmlw.WriteElementString("Path", report.Path);
-            xmlw.WriteElementString("PreferredViewingLocaleID", report.PreferredViewingLocaleID.ToStringSafe());
-            xmlw.WriteElementString("ProductLocaleID", report.ProductLocaleID.ToStringSafe());
-            xmlw.WriteElementString("ReportAppServer", report.ReportAppServer);
-            Controllers.ProcessCustomFunctionController(report.CustomFunctionController, xmlw);
-            Controllers.ProcessDatabaseController(report.DatabaseController, xmlw);
-            Controllers.ProcessDataDefController(report.DataDefController, xmlw);
-            Controllers.ProcessPrintOutputController(report.PrintOutputController,xmlw);
-            Controllers.ProcessReportDefController(report.ReportDefController, xmlw);
-            ReportDefModel.ProcessReportOptions(report.ReportOptions, xmlw);
-            Controllers.ProcessSubreportController(report.SubreportController, xmlw);
-            DataDefModel.ProcessSummaryInfo(report.SummaryInfo, xmlw);
-            xmlw.WriteEndElement();
+            jsonw.WritePropertyName(reportDoc);
+            jsonw.WriteStartObject();
+            jsonw.WriteString("DisplayName", report.DisplayName);
+            jsonw.WriteString("IsModified", report.IsModified.ToStringSafe());
+            jsonw.WriteString("IsOpen", report.IsOpen.ToStringSafe());
+            jsonw.WriteString("IsReadOnly", report.IsReadOnly.ToStringSafe());
+            jsonw.WriteString("LocaleID", report.LocaleID.ToStringSafe());
+            jsonw.WriteString("MajorVersion", report.MajorVersion.ToStringSafe());
+            jsonw.WriteString("MinorVersion", report.MinorVersion.ToStringSafe());
+            jsonw.WriteString("Path", report.Path);
+            jsonw.WriteString("PreferredViewingLocaleID", report.PreferredViewingLocaleID.ToStringSafe());
+            jsonw.WriteString("ProductLocaleID", report.ProductLocaleID.ToStringSafe());
+            jsonw.WriteString("ReportAppServer", report.ReportAppServer);
+            Controllers.ProcessCustomFunctionController(report.CustomFunctionController, jsonw);
+            Controllers.ProcessDatabaseController(report.DatabaseController, jsonw);
+            Controllers.ProcessDataDefController(report.DataDefController, jsonw);
+            Controllers.ProcessPrintOutputController(report.PrintOutputController,jsonw);
+            Controllers.ProcessReportDefController(report.ReportDefController, jsonw);
+            ReportDefModel.ProcessReportOptions(report.ReportOptions, jsonw);
+            Controllers.ProcessSubreportController(report.SubreportController, jsonw);
+            DataDefModel.ProcessSummaryInfo(report.SummaryInfo, jsonw);
+            jsonw.WriteEndObject();
         }   
     }
 }

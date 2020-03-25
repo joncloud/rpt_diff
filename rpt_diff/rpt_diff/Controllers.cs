@@ -1,66 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
-using CrystalDecisions.ReportAppServer.Controllers;
-
+﻿using CrystalDecisions.ReportAppServer.Controllers;
 using ExtensionMethods;
+using System.Text.Json;
 
 namespace rpt_diff
 {
     class Controllers
     {
-        public static void ProcessCustomFunctionController(CustomFunctionController cfc, XmlWriter xmlw)
+        public static void ProcessCustomFunctionController(CustomFunctionController cfc, Utf8JsonWriter jsonw)
         {
-            DataDefModel.ProcessCustomFunctions(cfc.GetCustomFunctions(), xmlw); 
+            DataDefModel.ProcessCustomFunctions(cfc.GetCustomFunctions(), jsonw); 
         }
-        public static void ProcessDatabaseController(DatabaseController dc, XmlWriter xmlw)
+        public static void ProcessDatabaseController(DatabaseController dc, Utf8JsonWriter jsonw)
         {
-            DataDefModel.ProcessDatabase(dc.Database, xmlw);
-        }
-
-        public static void ProcessDataDefController(DataDefController ddc, XmlWriter xmlw)
-        {
-            DataDefModel.ProcessDataDefinition(ddc.DataDefinition, xmlw);
+            DataDefModel.ProcessDatabase(dc.Database, jsonw);
         }
 
-
-        public static void ProcessPrintOutputController(PrintOutputController poc, XmlWriter xmlw)
+        public static void ProcessDataDefController(DataDefController ddc, Utf8JsonWriter jsonw)
         {
-            ReportDefModel.ProcessPrintOptions(poc.GetPrintOptions(), xmlw);
-            ReportDefModel.ProcessSavedXMLExportFormats(poc.GetSavedXMLExportFormats(), xmlw);
+            DataDefModel.ProcessDataDefinition(ddc.DataDefinition, jsonw);
         }
 
-        public static void ProcessReportDefController(ReportDefController2 rdc, XmlWriter xmlw)
+
+        public static void ProcessPrintOutputController(PrintOutputController poc, Utf8JsonWriter jsonw)
         {
-            ReportDefModel.ProcessReportDefinition(rdc.ReportDefinition, xmlw);
+            ReportDefModel.ProcessPrintOptions(poc.GetPrintOptions(), jsonw);
+            ReportDefModel.ProcessSavedXMLExportFormats(poc.GetSavedXMLExportFormats(), jsonw);
         }
 
-        public static void ProcessSubreportController(SubreportController sc, XmlWriter xmlw)
+        public static void ProcessReportDefController(ReportDefController2 rdc, Utf8JsonWriter jsonw)
         {
+            ReportDefModel.ProcessReportDefinition(rdc.ReportDefinition, jsonw);
+        }
+
+        public static void ProcessSubreportController(SubreportController sc, Utf8JsonWriter jsonw)
+        {
+            jsonw.WritePropertyName("Subreports");
+            jsonw.WriteStartArray();
             foreach (string Subreport in sc.GetSubreportNames())
             {
-                xmlw.WriteStartElement("Subreport");            
-                ProcessSubreportClientDocument(sc.GetSubreport(Subreport),xmlw);
-                ReportDefModel.ProcessSubreportLinks(sc.GetSubreportLinks(Subreport), xmlw);
-                xmlw.WriteEndElement();
+                jsonw.WriteStartObject();
+                ProcessSubreportClientDocument(sc.GetSubreport(Subreport),jsonw);
+                ReportDefModel.ProcessSubreportLinks(sc.GetSubreportLinks(Subreport), jsonw);
+                jsonw.WriteEndObject();
             }
+            jsonw.WriteEndArray();
         }
 
-        private static void ProcessSubreportClientDocument(SubreportClientDocument scd, XmlWriter xmlw)
+        private static void ProcessSubreportClientDocument(SubreportClientDocument scd, Utf8JsonWriter jsonw)
         {
-            xmlw.WriteElementString("EnableOnDemand", scd.EnableOnDemand.ToStringSafe());
-            xmlw.WriteElementString("EnableReimport", scd.EnableReimport.ToStringSafe());
-            xmlw.WriteElementString("IsImported", scd.IsImported.ToStringSafe());
-            xmlw.WriteElementString("Name", scd.Name);
-            xmlw.WriteElementString("SubreportLocation", scd.SubreportLocation);
-            ProcessDatabaseController(scd.DatabaseController, xmlw);
-            ProcessDataDefController(scd.DataDefController, xmlw);
-            ProcessReportDefController(scd.ReportDefController, xmlw);
-            ReportDefModel.ProcessReportOptions(scd.ReportOptions, xmlw);
+            jsonw.WriteString("EnableOnDemand", scd.EnableOnDemand.ToStringSafe());
+            jsonw.WriteString("EnableReimport", scd.EnableReimport.ToStringSafe());
+            jsonw.WriteString("IsImported", scd.IsImported.ToStringSafe());
+            jsonw.WriteString("Name", scd.Name);
+            jsonw.WriteString("SubreportLocation", scd.SubreportLocation);
+            ProcessDatabaseController(scd.DatabaseController, jsonw);
+            ProcessDataDefController(scd.DataDefController, jsonw);
+            ProcessReportDefController(scd.ReportDefController, jsonw);
+            ReportDefModel.ProcessReportOptions(scd.ReportOptions, jsonw);
         }
 
     }

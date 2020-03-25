@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="CrystalReports.Engine" Version="13.0.3501" />
+    <PackageReference Include="System.Text.Json" Version="4.7.1" />
   </ItemGroup>
   
 </Project>
