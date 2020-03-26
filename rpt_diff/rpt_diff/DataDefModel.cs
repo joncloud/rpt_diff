@@ -141,7 +141,7 @@ namespace rpt_diff
                         jsonw.WriteString("ReportName", pf.ReportName);
                         jsonw.WriteString("ValueRangeKind", pf.ValueRangeKind.ToStringSafe());
 
-                       
+
                         if (pf.CurrentValues != null)
                         {
                             ProcessValues(pf.CurrentValues, jsonw, "Current");
@@ -158,10 +158,12 @@ namespace rpt_diff
                         {
                             ProcessValues(pf.Values, jsonw, "");
                         }
+
+                        jsonw.WritePropertyName("Maximum");
                         ProcessValue(pf.MaximumValue as Value, jsonw, "Maximum");
+                        jsonw.WritePropertyName("Minimum");
                         ProcessValue(pf.MinimumValue as Value, jsonw, "Minimum");
-                        
-                        
+
                         break;   
                     }
                 case CrFieldKindEnum.crFieldKindRunningTotalField:
@@ -218,7 +220,6 @@ namespace rpt_diff
 
         private static void ProcessValue(Value val, Utf8JsonWriter jsonw, string type="")
         {
-            jsonw.WritePropertyName(type+"Value");
             jsonw.WriteStartObject();
             ConstantValue cvc = val as ConstantValue;
             ExpressionValue ev = val as ExpressionValue;
