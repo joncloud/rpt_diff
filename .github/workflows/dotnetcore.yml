@@ -2,9 +2,9 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [ publish ]
   pull_request:
-    branches: [ master ]
+    branches: [ publish ]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: '3.1.x'
 
     - name: Build with dotnet
       run: dotnet build --configuration Release rpt_diff/rpt_diff.sln
